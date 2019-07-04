@@ -1,0 +1,48 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(foreign) #for reading in the spss files
+```
+
+```{r}
+PNS_pheno_pass <- read.csv("/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., studyname=="PNSC")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
+
+qa_list <- PNS_pheno_pass %>% select(., dataset,subject_id=subject_id.x, sex = Sex, dx = DX, Age)
+```
+
+```{r}
+data <- read.csv('/scratch/gherman/SCZ_PINT/data/saba/ClinicalData/PNS/PNS_DATA_2018-07-16_1026.csv', stringsAsFactors= FALSE, na.strings=c("","NA", " ", "N/A"))  %>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>%
+  mutate(., subject_id=  str_replace(substr(record_id, 5, 13), "_", ""))
+  
+```
+
+
+```{r}
+dx <- qa_list %>% select(., subject_id, dx)
+
+```
+
+
+```{r}
+data2 <- data %>% mutate(., imaging_pass= ifelse((subject_id %in% qa_list$subject_id), 1, 0)) %>% merge(dx, by="subject_id", all.x=TRUE)
+
+final_list <- data2 %>% filter(., imaging_pass == 1)
+
+write.csv(data2,'/projects/gherman/SZ_PINT/cleaner_data_sets/PNS_arranged2.csv')
+
+
+```
+
+
+```{r}
+by_group<- final_list %>% group_by(dx)
+
+by_group %>% summarize(total= sum(!is.na(subject_id)), n_bprs = sum(!is.na(bprs_form_complete)), n_wtar = sum(!is.na(wtar_form_complete)), n_sans = sum(!is.na(sans_form_complete)), n_scid = sum(!is.na(scid5_dis1)))
+
+```
+

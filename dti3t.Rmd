@@ -1,0 +1,69 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(foreign) #for reading in the spss files
+```
+
+
+
+
+
+
+```{r}
+DTI_pheno_pass <- read.csv("/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., studyname=="DTI3T")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
+
+qa_list <- DTI_pheno_pass %>% select(., dataset,dti_id=subject_id.x, sex = Sex, dx = DX, Age) %>% mutate(dti_id=substr(dti_id,4,8))
+
+dx <- qa_list %>% select(., dti_id, dx)
+
+
+```
+
+
+
+
+
+
+```{r}
+
+data <- read.csv('/scratch/gherman/SCZ_PINT/data/saba/ClinicalData/DTI3T/DTI_DATA_2018-07-16.csv', stringsAsFactors= FALSE, na.strings=c("","NA", " ", "N/A"))  %>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>%
+  mutate(., dti_id= substr(dti_id, 3, 7))
+
+
+```
+
+
+
+```{r}
+data2 <- data %>% mutate(., imaging_pass= ifelse((dti_id %in% qa_list$dti_id), 1, 0))
+
+final_list <- data2 %>% filter(., imaging_pass == 1)
+
+final_list <- final_list %>% merge(dx, by="dti_id", all.x=TRUE)
+
+write.csv(final_list,'/projects/gherman/SZ_PINT/cleaner_data_sets/dti3t_arranged2.csv')
+
+
+```
+
+
+```{r}
+by_group<- final_list %>% group_by(dx)
+
+by_group %>% summarize(total= sum(!is.na(dti_id)), n_panss = sum(!is.na(panss_1_delusions)), n_wtar= sum(!is.na(wtar_standard)), n_sans= sum(!is.na(sans1_unchanging_expression)))
+
+```
+

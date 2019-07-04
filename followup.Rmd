@@ -1,0 +1,81 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+Left to do: dti3t asdd pns(?) openneuro rtmswm 
+
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(foreign) #for reading in the spss files
+```
+
+
+```{r}
+ds_pheno_pass <- read.csv("/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., studyname=="ds000030_R1.0.5")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
+
+qa_list <- ds_pheno_pass %>% select(., dataset,subject_id=subject_id.x, sex = Sex, dx = DX, Age)
+
+dx <- qa_list %>% select(., subject_id, dx)
+```
+
+Read in the participant data for all studies. These data have been filtered to only contain participants in erin's pheno_qapass document from November 2018. 
+
+Add a mutate studyname to this later.
+
+```{r}
+ZHH <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/ZHH_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=paste(GRID, SessNo, sep="_"))
+
+
+SPINS <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/SPINS_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")  %>% mutate(.,sub_id=record_id)
+
+
+PNS <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/PNS_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=record_id)
+
+
+ds30 <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/ds00030_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=participant_id)
+
+
+COBRE <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/COBRE_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=subjectid)
+
+
+dti3t <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/dti3t_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=dti_id)
+
+```
+
+
+bprs scores are very confusing. I'll get back to these. 
+
+```{r}
+
+#select(ZHH, )
+
+```
+
+SANS global scores (i will sum the global scores i think)
+
+```{r}
+ZHH_sans <- ZHH %>% select(sub_id, SANS_DATE, G_AffFlat, G_Alogia, G_Avolition, G_AsocAnh) %>% mutate(., G_total = select(., G_AffFlat, G_Alogia, G_Avolition, G_AsocAnh) %>% apply(1, sum))
+
+SPINS_sans <- SPINS %>% select(., sub_id, sans_doa, sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia) %>% mutate(., G_total =select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
+
+PNS_sans <- PNS %>% select(., sub_id, sans_doa, sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia) %>% mutate(., G_total = select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
+
+ds30_sans <- ds30 %>% select(., sub_id, sans_g_flattening=sans7, sans_g_alogia=sans11, sans_g_avolition=sans16, sans_g_anhedonia = sans21) %>% mutate(., G_total = select(.,sans_g_flattening, sans_g_alogia, sans_g_avolition, sans_g_anhedonia)%>% apply(1, sum))
+
+
+dti3t_sans <- dti3t %>% select(., sub_id, sans7_global_flattening, sans12_global_alogia, sans17_global_avolition, sans22_global_asocial_anhedonia) %>% mutate(., G_total = select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
+```
+
+
+```{r}
+rbind(select(ZHH_sans, sub_id, G_total), select(SPINS_sans, sub_id, G_total))
+```
+
+

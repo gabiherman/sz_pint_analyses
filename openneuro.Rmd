@@ -1,0 +1,57 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+Left to do: dti3t asdd pns(?) openneuro rtmswm 
+
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(foreign) #for reading in the spss files
+```
+
+
+```{r}
+ds_pheno_pass <- read.csv("/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., studyname=="ds000030_R1.0.5")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
+
+qa_list <- ds_pheno_pass %>% select(., dataset, sex = Sex, dx = DX, Age, participant_id=subject)
+
+dx <- qa_list %>% select(., participant_id, dx)
+```
+
+
+```{r}
+bprs <- read.csv('/scratch/gherman/SCZ_PINT/data/saba/ClinicalData/ds000030/phenotype_bprs.tsv', stringsAsFactors= FALSE, na.strings=c("","NA", " ", "N/A", "n/a"), sep = '\t')  %>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")
+  
+sans <- read.csv('/scratch/gherman/SCZ_PINT/data/saba/ClinicalData/ds000030/phenotype_sans.tsv', stringsAsFactors= FALSE, na.strings=c("","NA", " ", "N/A", "n/a"), sep = '\t')  %>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")
+
+
+scid <- read.csv('/scratch/gherman/SCZ_PINT/data/saba/ClinicalData/ds000030/phenotype_scid.tsv', stringsAsFactors= FALSE, na.strings=c("","NA", " ", "N/A", "n/a"), sep = '\t')  %>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
+
+
+```
+
+```{r}
+all_evals <- merge(bprs, sans, by="participant_id", all.x=TRUE, all.y=TRUE) %>% merge(., scid, by="participant_id", all.x=TRUE, all.y=TRUE) 
+
+data <- all_evals %>% mutate(., imaging_pass= ifelse((participant_id %in% qa_list$participant_id), 1, 0))
+
+final_list <- data %>% filter(., imaging_pass == 1) %>% merge(dx, by="participant_id", all.x=TRUE)
+
+write.csv(final_list,'/projects/gherman/SZ_PINT/cleaner_data_sets/ds00030_arranged2.csv')
+
+```
+
+
+```{r}
+by_group<- final_list %>% group_by(dx)
+
+by_group %>% summarize(total= sum(!is.na(participant_id)), n_bprs = sum(!is.na(bprs_depanx)), n_sans= sum(!is.na(sans8)), n_scid = sum(!is.na(scid_dx1)))
+```
+

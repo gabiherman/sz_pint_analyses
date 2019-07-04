@@ -1,0 +1,67 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+
+
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(foreign) #for reading in the spss files
+```
+
+
+
+```{r}
+SZ = read.spss('/scratch/gherman/SCZ_PINT/data/ZHH/phenotypic/Patient\ Sample\ 7-30-18.sav', to.data.frame=TRUE, use.value.labels = FALSE, stringsAsFactors= FALSE, na.strings=c("","NA", " ", "N/A")) %>% mutate(., pt_group="SZ") %>% mutate_all(trimws) %>% rename(., GRID=grid)
+HC = read.spss('/scratch/gherman/SCZ_PINT/data/ZHH/phenotypic/Control\ Sample\ 7-30-18.sav', to.data.frame=TRUE, use.value.labels = FALSE, stringsAsFactors = FALSE, na.strings=c("","NA", " ", "N/A"))%>% mutate(., pt_group="HC")%>% mutate_all(trimws)
+
+```
+
+These are all the ZHH participants we have clinical data for:
+```{r}
+Combo <- bind_rows(SZ, HC) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")%>% mutate_all(na_if, ".")
+```
+
+
+Don't run this for now, I'll add this in after. (the edu codes are in here too. )
+```{r eval=FALSE}
+demo_sz <- read_xlsx("/scratch/gherman/SCZ_PINT/data/ZHH/demographics/qrySZ_Sess_Miklos.xlsx") %>% select(.,grid,SessNo)
+demo_hc <- read_xlsx("/scratch/gherman/SCZ_PINT/data/ZHH/demographics/qryHC_NewResting_15-40.xlsx") %>% select(., "grid"=GRID,SessNo)
+```
+
+```{r}
+ZHH_pheno_pass <- read.csv("/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., studyname=="ZHH") %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")%>% mutate_all(trimws)
+qa_list <- ZHH_pheno_pass %>% select(., dataset,GRID,SessNo=zhh_session_id, sex = Sex, dx = DX, Age)
+```
+
+
+```{r}
+Combo <- Combo %>% mutate(., imaging_pass= ifelse((GRID %in% qa_list$GRID), 1, 0))
+
+write.csv(Combo,'/projects/gherman/SZ_PINT/cleaner_data_sets/ZHH_arranged.csv')
+
+```
+
+```{r}
+final_list <- Combo %>% filter(., imaging_pass == 1)
+
+write.csv(final_list,'/projects/gherman/SZ_PINT/cleaner_data_sets/ZHH_arranged2.csv')
+
+```
+
+
+```{r}
+by_group<- final_list %>% group_by(pt_group)
+
+by_group %>% summarize(total= sum(!is.na(GRID)), n_wrat = sum(!is.na(WRAT3RAW)), n_bprs= sum(!is.na(BPRSDate)), n_sans = sum(!is.na(SANS_DATE)))
+```
+
+
+

@@ -1,0 +1,59 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(tidyverse)
+library(readxl)
+library(foreign) #for reading in the spss files
+```
+
+
+Soooo this is a bit weird. Because the COBRE dataset is sort of kind of terrible, and didn't have dates or visit numbers for some reason. I need to make a schizconnect acct and try to find something with visit numbers. 
+
+```{r}
+COBRE_pheno_pass <- read.csv("/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., studyname=="COBRE")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
+
+qa_list <- COBRE_pheno_pass %>% select(., dataset,subjectid=subject_id.x, sex = Sex, dx = DX, Age)
+
+```
+
+
+```{r}
+data <- read.csv('/scratch/gherman/SCZ_PINT/data/saba/ClinicalData/COBRE/schizconnect_COBRE_assessmentData_2963.csv', stringsAsFactors= FALSE, na.strings=c("","NA", " ", "N/A"))   %>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")  %>% mutate_all(na_if, "MD") %>%
+ filter(!is.na(question_value))
+
+data <- data %>% distinct(., source, study, site, subjectid, visit, assessment, assessment_description, .keep_all=TRUE) %>% select(subjectid, question_id,question_value)
+```
+
+```{r}
+
+data2 <- data %>% spread(key=question_id, value=question_value)
+```
+
+
+```{r}
+data2 <- data2 %>% mutate(., imaging_pass= ifelse((subjectid %in% qa_list$subjectid), 1, 0))
+
+final_list <- data2 %>% filter(., imaging_pass == 1) 
+
+dx <- qa_list %>% select(subjectid, dx)
+
+final_final_list <- final_list %>% merge(dx, by="subjectid", all.x=TRUE)
+
+write.csv(final_final_list,'/projects/gherman/SZ_PINT/cleaner_data_sets/COBRE_arranged2.csv')
+
+
+```
+
+```{r}
+
+by_group<- final_final_list %>% group_by(dx)
+
+by_group %>% summarize(total= sum(!is.na(subjectid)), n_wtar = sum(!is.na(CNP_05)), n_wasi= sum(!is.na(CNP_09)), n_panss = sum(!is.na(FIPAN_1)), n_scid = sum(!is.na(SCIDII_01)))
+```
+
+
+
