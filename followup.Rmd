@@ -49,6 +49,9 @@ dti3t <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/dti3t_arranged2.c
 
 ```
 
+*SANS*, BPRS, WTAR, WASI, PANSS
+
+
 
 bprs scores are very confusing. I'll get back to these. 
 
@@ -75,7 +78,30 @@ dti3t_sans <- dti3t %>% select(., sub_id, sans7_global_flattening, sans12_global
 
 
 ```{r}
-rbind(select(ZHH_sans, sub_id, G_total), select(SPINS_sans, sub_id, G_total))
+sans <- rbind(select(ZHH_sans, sub_id, G_total), select(SPINS_sans, sub_id, G_total), select(PNS_sans, sub_id, G_total), select(ds30_sans, sub_id, G_total), select(dti3t_sans, sub_id, G_total))
+
+```
+
+
+WTAR Scores
+
+```{r}
+SPINS_wtar <- SPINS %>% select(., sub_id, wtar_doa, wtar_raw = wtar_raw_score, wtar_std =  wtar_std_score,wtar_english_first)
+
+COBRE_wtar <- COBRE %>% select(., sub_id, wtar_raw=CNP_05, age=CNP_01) #need to standardize these scores (and maybe compare to predicted scores as in here ->> https://link.springer.com/referenceworkentry/10.1007%2F978-0-387-79948-3_1500) (wtar_standard cnp_06 is all blank :( ))
+
+
+dti3t_wtar <- dti3t %>% select(., sub_id, wtar_raw, wtar_std=wtar_standard) 
+
+PNS_wtar <- PNS %>% select(., sub_id, wtar_doa, wtar_raw = wtar_raw_score, wtar_std =  wtar_std_score_calc )
+
+```
+
+
+PANSS Scores
+
+```{r}
+COBRE_panss <- 
 ```
 
 
