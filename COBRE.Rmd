@@ -25,17 +25,17 @@ qa_list <- COBRE_pheno_pass %>% select(., dataset,subjectid=subject_id.x, sex = 
 data <- read.csv('/scratch/gherman/SCZ_PINT/data/saba/ClinicalData/COBRE/schizconnect_COBRE_assessmentData_2963.csv', stringsAsFactors= FALSE, na.strings=c("","NA", " ", "N/A"))   %>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")  %>% mutate_all(na_if, "MD") %>%
  filter(!is.na(question_value))
 
-data <- data %>% distinct(., source, study, site, subjectid, visit, assessment, assessment_description, .keep_all=TRUE) %>% select(subjectid, question_id,question_value)
+data <- data %>% distinct(., source, study, site, subjectid, visit, assessment, assessment_description, question_id, question_value, .keep_all=TRUE) %>% select(subjectid, question_id,question_value)
 ```
 
 ```{r}
 
-data2 <- data %>% spread(key=question_id, value=question_value)
+data2 <- data %>% mutate(id=1:n()) %>% spread(key=question_id, value=question_value) %>% select(-id)
 ```
 
 
 ```{r}
-data2 <- data2 %>% mutate(., imaging_pass= ifelse((subjectid %in% qa_list$subjectid), 1, 0))
+data2 <- data2 %>% mutate(., imaging_pass= ifelse((subjectid %in% qa_list$subjectid), 1, 0)) %>% gather(., key = "variable", value="value", -subjectid, na.rm=TRUE)%>%  distinct(subjectid, variable, .keep_all=TRUE)%>% spread(., key=variable,value=value)
 
 final_list <- data2 %>% filter(., imaging_pass == 1) 
 
@@ -54,6 +54,5 @@ by_group<- final_final_list %>% group_by(dx)
 
 by_group %>% summarize(total= sum(!is.na(subjectid)), n_wtar = sum(!is.na(CNP_05)), n_wasi= sum(!is.na(CNP_09)), n_panss = sum(!is.na(FIPAN_1)), n_scid = sum(!is.na(SCIDII_01)))
 ```
-
 
 
