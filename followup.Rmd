@@ -62,21 +62,21 @@ bprs scores are very confusing. I'll get back to these.
 SANS global scores (i will sum the global scores i think)
 
 ```{r}
-ZHH_sans <- ZHH %>% select(sub_id, SANS_DATE, G_AffFlat, G_Alogia, G_Avolition, G_AsocAnh) %>% mutate(., G_total = select(., G_AffFlat, G_Alogia, G_Avolition, G_AsocAnh) %>% apply(1, sum))
+ZHH_sans <- ZHH %>% select(sub_id, dataset, SANS_DATE, G_AffFlat, G_Alogia, G_Avolition, G_AsocAnh) %>% mutate(., G_total = select(., G_AffFlat, G_Alogia, G_Avolition, G_AsocAnh) %>% apply(1, sum))
 
-SPINS_sans <- SPINS %>% select(., sub_id, sans_doa, sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia) %>% mutate(., G_total =select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
+SPINS_sans <- SPINS %>% select(., sub_id, dataset, sans_doa, sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia) %>% mutate(., G_total =select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
 
-PNS_sans <- PNS %>% select(., sub_id, sans_doa, sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia) %>% mutate(., G_total = select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
+PNS_sans <- PNS %>% select(., sub_id, dataset, sans_doa, sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia) %>% mutate(., G_total = select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
 
-ds30_sans <- ds30 %>% select(., sub_id, sans_g_flattening=sans7, sans_g_alogia=sans11, sans_g_avolition=sans16, sans_g_anhedonia = sans21) %>% mutate(., G_total = select(.,sans_g_flattening, sans_g_alogia, sans_g_avolition, sans_g_anhedonia)%>% apply(1, sum))
+ds30_sans <- ds30 %>% select(., sub_id, dataset, sans_g_flattening=sans7, sans_g_alogia=sans11, sans_g_avolition=sans16, sans_g_anhedonia = sans21) %>% mutate(., G_total = select(.,sans_g_flattening, sans_g_alogia, sans_g_avolition, sans_g_anhedonia)%>% apply(1, sum))
 
 
-dti3t_sans <- dti3t %>% select(., sub_id, sans7_global_flattening, sans12_global_alogia, sans17_global_avolition, sans22_global_asocial_anhedonia) %>% mutate(., G_total = select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
+dti3t_sans <- dti3t %>% select(., sub_id, dataset, sans7_global_flattening, sans12_global_alogia, sans17_global_avolition, sans22_global_asocial_anhedonia) %>% mutate(., G_total = select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
 ```
 
 
 ```{r}
-sans <- rbind(select(ZHH_sans, sub_id, G_total), select(SPINS_sans, sub_id, G_total), select(PNS_sans, sub_id, G_total), select(ds30_sans, sub_id, G_total), select(dti3t_sans, sub_id, G_total))
+sans <- rbind(select(ZHH_sans, sub_id,dataset, G_total), select(SPINS_sans, sub_id, dataset,G_total), select(PNS_sans, sub_id,dataset, G_total), select(ds30_sans, sub_id, dataset,G_total), select(dti3t_sans, sub_id, dataset, G_total))
 
 ```
 
@@ -84,14 +84,14 @@ sans <- rbind(select(ZHH_sans, sub_id, G_total), select(SPINS_sans, sub_id, G_to
 WTAR Scores
 
 ```{r}
-SPINS_wtar <- SPINS %>% select(., sub_id, wtar_doa, wtar_raw = wtar_raw_score, wtar_std =  wtar_std_score,wtar_english_first)
+SPINS_wtar <- SPINS %>% select(., sub_id, dataset,wtar_doa, wtar_raw = wtar_raw_score, wtar_std =  wtar_std_score,wtar_english_first)
 
-COBRE_wtar <- COBRE %>% select(., sub_id, wtar_raw=CNP_05, wtar_std = CNP_06) #need to standardize these scores (and maybe compare to predicted scores as in here ->> https://link.springer.com/referenceworkentry/10.1007%2F978-0-387-79948-3_1500) (wtar_standard cnp_06 is all blank :( )) #predicted score is CNP_07, difference is CNP_08
-dti3t_wtar <- dti3t %>% select(., sub_id, wtar_raw, wtar_std=wtar_standard) 
+COBRE_wtar <- COBRE %>% select(., sub_id, dataset,wtar_raw=CNP_05, wtar_std = CNP_06) #need to standardize these scores (and maybe compare to predicted scores as in here ->> https://link.springer.com/referenceworkentry/10.1007%2F978-0-387-79948-3_1500) (wtar_standard cnp_06 is all blank :( )) #predicted score is CNP_07, difference is CNP_08
+dti3t_wtar <- dti3t %>% select(., sub_id, dataset,wtar_raw, wtar_std=wtar_standard) 
 
-PNS_wtar <- PNS %>% select(., sub_id, wtar_doa, wtar_raw = wtar_raw_score, wtar_std =  wtar_std_score_calc )
+PNS_wtar <- PNS %>% select(., sub_id, dataset,wtar_doa, wtar_raw = wtar_raw_score, wtar_std =  wtar_std_score_calc )
 
-wtar <- rbind(select(SPINS_wtar, sub_id,wtar_raw,wtar_std), select(COBRE_wtar, sub_id, wtar_raw,wtar_std), select(dti3t_wtar, sub_id, wtar_raw,wtar_std),select(PNS_wtar, sub_id, wtar_raw,wtar_std) )
+wtar <- rbind(select(SPINS_wtar, sub_id,dataset,wtar_raw,wtar_std), select(COBRE_wtar, sub_id, dataset,wtar_raw,wtar_std), select(dti3t_wtar, sub_id,dataset, wtar_raw,wtar_std),select(PNS_wtar, sub_id, dataset,wtar_raw,wtar_std) )
 
 ```
 
@@ -99,15 +99,15 @@ wtar <- rbind(select(SPINS_wtar, sub_id,wtar_raw,wtar_std), select(COBRE_wtar, s
 PANSS Scores (according to this http://huibee.com/wordpress/wp-content/uploads/2013/11/PANSS-Scoring-Criteria.pdf)
 
 ```{r}
-COBRE_panss <- COBRE %>% select(., sub_id, starts_with("FIPAN")) %>% mutate_at(vars(-sub_id,-FIPAN_30),funs(recode(.,"Absent"=1,"Minimal"=2, "Mild"=3, "Moderate"=4,"Moderate severe"=5, "Severe"=6,"Extreme"=7))) %>%  select(c(paste0("FIPAN_",1:30)),everything()) %>% mutate(., panss_total_calc=rowSums(select(.,FIPAN_1:FIPAN_30))                                                            ,panss_positive_total_calc=rowSums(select(.,FIPAN_1:FIPAN_7)),panss_negative_total_calc=rowSums(select(.,FIPAN_8:FIPAN_14)),panss_general_total_calc=rowSums(select(.,FIPAN_15:FIPAN_30)))
+COBRE_panss <- COBRE %>% select(., sub_id,dataset, starts_with("FIPAN")) %>% mutate_at(vars(-sub_id,-FIPAN_30, -dataset),funs(recode(.,"Absent"=1,"Minimal"=2, "Mild"=3, "Moderate"=4,"Moderate severe"=5, "Severe"=6,"Extreme"=7))) %>%  select(c(paste0("FIPAN_",1:30)),everything()) %>% mutate(., panss_total_calc=rowSums(select(.,FIPAN_1:FIPAN_30))                                                            ,panss_positive_total_calc=rowSums(select(.,FIPAN_1:FIPAN_7)),panss_negative_total_calc=rowSums(select(.,FIPAN_8:FIPAN_14)),panss_general_total_calc=rowSums(select(.,FIPAN_15:FIPAN_30)))
 
-dti3t_panss <- dti3t %>% select(., sub_id, starts_with("panss"))
+dti3t_panss <- dti3t %>% select(., sub_id, dataset, starts_with("panss"))
 
 
-panss <- rbind(select(COBRE_panss, sub_id, panss_total_calc,panss_positive_total_calc,panss_negative_total_calc, panss_general_total_calc), select(dti3t_panss, sub_id, panss_total_calc,panss_positive_total_calc,panss_negative_total_calc, panss_general_total_calc))
+panss <- rbind(select(COBRE_panss, sub_id, dataset, panss_total_calc,panss_positive_total_calc,panss_negative_total_calc, panss_general_total_calc), select(dti3t_panss, sub_id, dataset, panss_total_calc,panss_positive_total_calc,panss_negative_total_calc, panss_general_total_calc))
 ```
 
 ```{r}
-merge(qa_list,panss)
+compiled <- merge(qa_list,panss, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE) %>% merge(.,sans, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(.,wtar, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)
 ```
 

@@ -250,8 +250,9 @@ library(foreign) #for reading in the spss files</code></pre>
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUE5TX3BoZW5vX3Bhc3MgPC0gcmVhZC5jc3YoXCIvc2NyYXRjaC9naGVybWFuL1NDWl9QSU5UL2RhdGEvMjAxODExMThfcGhlbm9fcWFwYXNzLmNzdlwiLCBzdHJpbmdzQXNGYWN0b3JzID0gRkFMU0UpICU+JSBmaWx0ZXIoLiwgc3R1ZHluYW1lPT1cIlBOU0NcIiklPiUgbXV0YXRlX2FsbCh0cmltd3MpICU+JSBtdXRhdGVfYWxsKG5hX2lmLFwiTkFcIikgJT4lIG11dGF0ZV9hbGwobmFfaWYsIFwiXCIpICU+JSBtdXRhdGVfYWxsKG5hX2lmLCBcIiBcIikgXG5xYV9saXN0IDwtIFBOU19waGVub19wYXNzICU+JSBzZWxlY3QoLiwgZGF0YXNldCxzdWJqZWN0X2lkPXN1YmplY3RfaWQueCwgc2V4ID0gU2V4LCBkeCA9IERYLCBBZ2UpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuUE5TX3BoZW5vX3Bhc3MgPC0gcmVhZC5jc3YoXCIvc2NyYXRjaC9naGVybWFuL1NDWl9QSU5UL2RhdGEvMjAxODExMThfcGhlbm9fcWFwYXNzLmNzdlwiLCBzdHJpbmdzQXNGYWN0b3JzID0gRkFMU0UpICU+JSBmaWx0ZXIoLiwgc3R1ZHluYW1lPT1cIlBOU0NcIiklPiUgbXV0YXRlX2FsbCh0cmltd3MpICU+JSBtdXRhdGVfYWxsKG5hX2lmLFwiTkFcIikgJT4lIG11dGF0ZV9hbGwobmFfaWYsIFwiXCIpICU+JSBtdXRhdGVfYWxsKG5hX2lmLCBcIiBcIikgXG5cbnFhX2xpc3QgPC0gUE5TX3BoZW5vX3Bhc3MgJT4lIHNlbGVjdCguLCBkYXRhc2V0LHN1YmplY3RfaWQ9c3ViamVjdF9pZC54LCBzZXggPSBTZXgsIGR4ID0gRFgsIEFnZSlcbmBgYCJ9 -->
 <pre class="r"><code>PNS_pheno_pass &lt;- read.csv(&quot;/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv&quot;, stringsAsFactors = FALSE) %&gt;% filter(., studyname==&quot;PNSC&quot;)%&gt;% mutate_all(trimws) %&gt;% mutate_all(na_if,&quot;NA&quot;) %&gt;% mutate_all(na_if, &quot;&quot;) %&gt;% mutate_all(na_if, &quot; &quot;) 
+
 qa_list &lt;- PNS_pheno_pass %&gt;% select(., dataset,subject_id=subject_id.x, sex = Sex, dx = DX, Age)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -267,32 +268,32 @@ qa_list &lt;- PNS_pheno_pass %&gt;% select(., dataset,subject_id=subject_id.x, s
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZHggPC0gcWFfbGlzdCAlPiUgc2VsZWN0KC4sIHN1YmplY3RfaWQsIGR4KVxuYGBgIn0= -->
-<pre class="r"><code>dx &lt;- qa_list %&gt;% select(., subject_id, dx)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZHggPC0gcWFfbGlzdCAlPiUgc2VsZWN0KC4sIHN1YmplY3RfaWQsIGR4KVxuXG5gYGAifQ== -->
+<pre class="r"><code>dx &lt;- qa_list %&gt;% select(., subject_id, dx)
+</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YTIgPC0gZGF0YSAlPiUgbXV0YXRlKC4sIGltYWdpbmdfcGFzcz0gaWZlbHNlKChzdWJqZWN0X2lkICVpbiUgcWFfbGlzdCRzdWJqZWN0X2lkKSwgMSwgMCkpICU+JSBtZXJnZShkeCwgYnk9XCJzdWJqZWN0X2lkXCIsIGFsbC54PVRSVUUpXG5maW5hbF9saXN0IDwtIGRhdGEyICU+JSBmaWx0ZXIoLiwgaW1hZ2luZ19wYXNzID09IDEpXG53cml0ZS5jc3YoZGF0YTIsJy9wcm9qZWN0cy9naGVybWFuL1NaX1BJTlQvY2xlYW5lcl9kYXRhX3NldHMvUE5TX2FycmFuZ2VkMi5jc3YnKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YTIgPC0gZGF0YSAlPiUgbXV0YXRlKC4sIGltYWdpbmdfcGFzcz0gaWZlbHNlKChzdWJqZWN0X2lkICVpbiUgcWFfbGlzdCRzdWJqZWN0X2lkKSwgMSwgMCkpICU+JSBtZXJnZShkeCwgYnk9XCJzdWJqZWN0X2lkXCIsIGFsbC54PVRSVUUpXG5cbmZpbmFsX2xpc3QgPC0gZGF0YTIgJT4lIGZpbHRlciguLCBpbWFnaW5nX3Bhc3MgPT0gMSlcblxud3JpdGUuY3N2KGRhdGEyLCcvcHJvamVjdHMvZ2hlcm1hbi9TWl9QSU5UL2NsZWFuZXJfZGF0YV9zZXRzL1BOU19hcnJhbmdlZDIuY3N2JylcblxuXG5gYGAifQ== -->
 <pre class="r"><code>data2 &lt;- data %&gt;% mutate(., imaging_pass= ifelse((subject_id %in% qa_list$subject_id), 1, 0)) %&gt;% merge(dx, by=&quot;subject_id&quot;, all.x=TRUE)
+
 final_list &lt;- data2 %&gt;% filter(., imaging_pass == 1)
-write.csv(data2,'/projects/gherman/SZ_PINT/cleaner_data_sets/PNS_arranged2.csv')</code></pre>
+
+write.csv(data2,'/projects/gherman/SZ_PINT/cleaner_data_sets/PNS_arranged2.csv')
+</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnlfZ3JvdXA8LSBmaW5hbF9saXN0ICU+JSBncm91cF9ieShkeClcbmJ5X2dyb3VwICU+JSBzdW1tYXJpemUodG90YWw9IHN1bSghaXMubmEoc3ViamVjdF9pZCkpLCBuX2JwcnMgPSBzdW0oIWlzLm5hKGJwcnNfZm9ybV9jb21wbGV0ZSkpLCBuX3d0YXIgPSBzdW0oIWlzLm5hKHd0YXJfZm9ybV9jb21wbGV0ZSkpLCBuX3NhbnMgPSBzdW0oIWlzLm5hKHNhbnNfZm9ybV9jb21wbGV0ZSkpLCBuX3NjaWQgPSBzdW0oIWlzLm5hKHNjaWQ1X2RpczEpKSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnlfZ3JvdXA8LSBmaW5hbF9saXN0ICU+JSBncm91cF9ieShkeClcblxuYnlfZ3JvdXAgJT4lIHN1bW1hcml6ZSh0b3RhbD0gc3VtKCFpcy5uYShzdWJqZWN0X2lkKSksIG5fYnBycyA9IHN1bSghaXMubmEoYnByc19mb3JtX2NvbXBsZXRlKSksIG5fd3RhciA9IHN1bSghaXMubmEod3Rhcl9mb3JtX2NvbXBsZXRlKSksIG5fc2FucyA9IHN1bSghaXMubmEoc2Fuc19mb3JtX2NvbXBsZXRlKSksIG5fc2NpZCA9IHN1bSghaXMubmEoc2NpZDVfZGlzMSkpKVxuXG5gYGAifQ== -->
 <pre class="r"><code>by_group&lt;- final_list %&gt;% group_by(dx)
-by_group %&gt;% summarize(total= sum(!is.na(subject_id)), n_bprs = sum(!is.na(bprs_form_complete)), n_wtar = sum(!is.na(wtar_form_complete)), n_sans = sum(!is.na(sans_form_complete)), n_scid = sum(!is.na(scid5_dis1)))</code></pre>
+
+by_group %&gt;% summarize(total= sum(!is.na(subject_id)), n_bprs = sum(!is.na(bprs_form_complete)), n_wtar = sum(!is.na(wtar_form_complete)), n_sans = sum(!is.na(sans_form_complete)), n_scid = sum(!is.na(scid5_dis1)))
+</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXHUwMDFiWzM4OzU7MjQ2bSMgQSB0aWJibGU6IDEgeCA2XHUwMDFiWzM5bVxuICBkeCAgICB0b3RhbCBuX2JwcnMgbl93dGFyIG5fc2FucyBuX3NjaWRcbiAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxjaHI+XHUwMDFiWzM5bVx1MDAxYlsyM20gXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxpbnQ+XHUwMDFiWzM5bVx1MDAxYlsyM20gIFx1MDAxYlszbVx1MDAxYlszODs1OzI0Nm08aW50Plx1MDAxYlszOW1cdTAwMWJbMjNtICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGludD5cdTAwMWJbMzltXHUwMDFiWzIzbSAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxpbnQ+XHUwMDFiWzM5bVx1MDAxYlsyM20gIFx1MDAxYlszbVx1MDAxYlszODs1OzI0Nm08aW50Plx1MDAxYlszOW1cdTAwMWJbMjNtXG5cdTAwMWJbMzg7NTsyNTBtMVx1MDAxYlszOW0gU1NEICAgICAgIDcgICAgICA3ICAgICAgNyAgICAgIDcgICAgICA3XG4ifQ== -->
-<pre><code>[38;5;246m# A tibble: 1 x 6[39m
-  dx    total n_bprs n_wtar n_sans n_scid
-  [3m[38;5;246m&lt;chr&gt;[39m[23m [3m[38;5;246m&lt;int&gt;[39m[23m  [3m[38;5;246m&lt;int&gt;[39m[23m  [3m[38;5;246m&lt;int&gt;[39m[23m  [3m[38;5;246m&lt;int&gt;[39m[23m  [3m[38;5;246m&lt;int&gt;[39m[23m
-[38;5;250m1[39m SSD       7      7      7      7      7</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
