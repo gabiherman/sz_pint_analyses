@@ -18,11 +18,9 @@ library(foreign) #for reading in the spss files
 
 
 ```{r}
-ds_pheno_pass <- read.csv("/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., studyname=="ds000030_R1.0.5")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
+ds_pheno_pass <- read.csv("/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv", stringsAsFactors = FALSE) %>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
 
-qa_list <- ds_pheno_pass %>% select(., dataset,subject_id=subject_id.x, sex = Sex, dx = DX, Age)
-
-dx <- qa_list %>% select(., subject_id, dx)
+qa_list <- ds_pheno_pass %>% select(., dataset,sub_id=subject_id.x, sex = Sex, dx = DX, age = Age)
 ```
 
 Read in the participant data for all studies. These data have been filtered to only contain participants in erin's pheno_qapass document from November 2018. 
@@ -30,22 +28,22 @@ Read in the participant data for all studies. These data have been filtered to o
 Add a mutate studyname to this later.
 
 ```{r}
-ZHH <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/ZHH_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=paste(GRID, SessNo, sep="_"))
+ZHH <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/ZHH_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=GRID)%>% mutate(., dataset="ZHH")
 
 
-SPINS <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/SPINS_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")  %>% mutate(.,sub_id=record_id)
+SPINS <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/SPINS_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")  %>%  mutate(.,sub_id=str_replace_all(record_id,c("_"="","SPN01"=""))) %>% mutate(., dataset="SPINS")
 
 
-PNS <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/PNS_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=record_id)
+PNS <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/PNS_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=str_replace_all(record_id,c("_"="","PNS"="")))%>% mutate(., dataset="PNSC")
 
 
-ds30 <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/ds00030_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=participant_id)
+ds30 <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/ds00030_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=str_remove(participant_id, "sub-")) %>% mutate(., dataset="ds000030_R1.0.5")
 
 
-COBRE <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/COBRE_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=subjectid)
+COBRE <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/COBRE_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=subjectid) %>% mutate(., dataset="COBRE")
 
 
-dti3t <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/dti3t_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=dti_id)
+dti3t <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/dti3t_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=paste0("CMH",dti_id))%>% mutate(., dataset="DTI3T")
 
 ```
 
@@ -88,20 +86,28 @@ WTAR Scores
 ```{r}
 SPINS_wtar <- SPINS %>% select(., sub_id, wtar_doa, wtar_raw = wtar_raw_score, wtar_std =  wtar_std_score,wtar_english_first)
 
-COBRE_wtar <- COBRE %>% select(., sub_id, wtar_raw=CNP_05, age=CNP_01) #need to standardize these scores (and maybe compare to predicted scores as in here ->> https://link.springer.com/referenceworkentry/10.1007%2F978-0-387-79948-3_1500) (wtar_standard cnp_06 is all blank :( ))
-
-
+COBRE_wtar <- COBRE %>% select(., sub_id, wtar_raw=CNP_05, wtar_std = CNP_06) #need to standardize these scores (and maybe compare to predicted scores as in here ->> https://link.springer.com/referenceworkentry/10.1007%2F978-0-387-79948-3_1500) (wtar_standard cnp_06 is all blank :( )) #predicted score is CNP_07, difference is CNP_08
 dti3t_wtar <- dti3t %>% select(., sub_id, wtar_raw, wtar_std=wtar_standard) 
 
 PNS_wtar <- PNS %>% select(., sub_id, wtar_doa, wtar_raw = wtar_raw_score, wtar_std =  wtar_std_score_calc )
 
+wtar <- rbind(select(SPINS_wtar, sub_id,wtar_raw,wtar_std), select(COBRE_wtar, sub_id, wtar_raw,wtar_std), select(dti3t_wtar, sub_id, wtar_raw,wtar_std),select(PNS_wtar, sub_id, wtar_raw,wtar_std) )
+
 ```
 
 
-PANSS Scores
+PANSS Scores (according to this http://huibee.com/wordpress/wp-content/uploads/2013/11/PANSS-Scoring-Criteria.pdf)
 
 ```{r}
-COBRE_panss <- 
+COBRE_panss <- COBRE %>% select(., sub_id, starts_with("FIPAN")) %>% mutate_at(vars(-sub_id,-FIPAN_30),funs(recode(.,"Absent"=1,"Minimal"=2, "Mild"=3, "Moderate"=4,"Moderate severe"=5, "Severe"=6,"Extreme"=7))) %>%  select(c(paste0("FIPAN_",1:30)),everything()) %>% mutate(., panss_total_calc=rowSums(select(.,FIPAN_1:FIPAN_30))                                                            ,panss_positive_total_calc=rowSums(select(.,FIPAN_1:FIPAN_7)),panss_negative_total_calc=rowSums(select(.,FIPAN_8:FIPAN_14)),panss_general_total_calc=rowSums(select(.,FIPAN_15:FIPAN_30)))
+
+dti3t_panss <- dti3t %>% select(., sub_id, starts_with("panss"))
+
+
+panss <- rbind(select(COBRE_panss, sub_id, panss_total_calc,panss_positive_total_calc,panss_negative_total_calc, panss_general_total_calc), select(dti3t_panss, sub_id, panss_total_calc,panss_positive_total_calc,panss_negative_total_calc, panss_general_total_calc))
 ```
 
+```{r}
+merge(qa_list,panss)
+```
 
