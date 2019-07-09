@@ -71,7 +71,7 @@ PNS_sans <- PNS %>% select(., sub_id, dataset, sans_doa, sans7_global_flattening
 ds30_sans <- ds30 %>% select(., sub_id, dataset, sans_g_flattening=sans7, sans_g_alogia=sans11, sans_g_avolition=sans16, sans_g_anhedonia = sans21) %>% mutate(., G_total = select(.,sans_g_flattening, sans_g_alogia, sans_g_avolition, sans_g_anhedonia)%>% apply(1, sum))
 
 
-dti3t_sans <- dti3t %>% select(., sub_id, dataset, sans7_global_flattening, sans12_global_alogia, sans17_global_avolition, sans22_global_asocial_anhedonia) %>% mutate(., G_total = select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
+dti3t_sans <- dti3t %>% select(., sub_id, dataset, sans7_global_flattening, sans12_global_alogia, sans17_global_avolition, sans22_global_asocial_anhedonia) %>% mutate(., sans_G_total = select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
 ```
 
 
