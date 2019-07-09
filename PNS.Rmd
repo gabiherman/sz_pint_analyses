@@ -33,7 +33,7 @@ data2 <- data %>% mutate(., imaging_pass= ifelse((subject_id %in% qa_list$subjec
 
 final_list <- data2 %>% filter(., imaging_pass == 1)
 
-write.csv(data2,'/projects/gherman/SZ_PINT/cleaner_data_sets/PNS_arranged2.csv')
+write.csv(final_list,'/projects/gherman/SZ_PINT/cleaner_data_sets/PNS_arranged2.csv')
 
 
 ```
