@@ -111,3 +111,17 @@ panss <- rbind(select(COBRE_panss, sub_id, dataset, panss_total_calc,panss_posit
 compiled <- merge(qa_list,panss, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE) %>% merge(.,sans, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(.,wtar, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)
 ```
 
+
+Other stuff to consider adding: 
+Education (all)
+Age of onset (all except openneuro)
+Conners CPT 2(2)
+Category fluency? (2)
+MATRICS (2... maybe more? have to try interpreting better)
+HVLT (2? 3?)
+BACS symbol coding (2)
+
+I think their mighyt be WAIS or WASI for more than one study. If there's a FSIQ estimate can we combine it from multiple tests?
+
+
+Look into whether ASDD has anything.
