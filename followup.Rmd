@@ -21,6 +21,9 @@ library(foreign) #for reading in the spss files
 ds_pheno_pass <- read.csv("/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv", stringsAsFactors = FALSE) %>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
 
 qa_list <- ds_pheno_pass %>% select(., dataset,sub_id=subject_id.x, sex = Sex, dx = DX, age = Age)
+
+dx <- qa_list %>% select(., sub_id, dx)
+
 ```
 
 Read in the participant data for all studies. These data have been filtered to only contain participants in erin's pheno_qapass document from November 2018. 
@@ -47,7 +50,7 @@ dti3t <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/dti3t_arranged2.c
 
 ```
 
-*SANS*, BPRS, WTAR, WASI, PANSS
+*SANS*, BPRS, *WTAR*, WASI, *PANSS*
 
 
 
@@ -62,13 +65,13 @@ bprs scores are very confusing. I'll get back to these.
 SANS global scores (i will sum the global scores i think)
 
 ```{r}
-ZHH_sans <- ZHH %>% select(sub_id, dataset, SANS_DATE, G_AffFlat, G_Alogia, G_Avolition, G_AsocAnh) %>% mutate(., G_total = select(., G_AffFlat, G_Alogia, G_Avolition, G_AsocAnh) %>% apply(1, sum))
+ZHH_sans <- ZHH %>% select(sub_id, dataset, SANS_DATE, G_AffFlat, G_Alogia, G_Avolition, G_AsocAnh) %>% mutate(., sans_G_total = select(., G_AffFlat, G_Alogia, G_Avolition, G_AsocAnh) %>% apply(1, sum))
 
-SPINS_sans <- SPINS %>% select(., sub_id, dataset, sans_doa, sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia) %>% mutate(., G_total =select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
+SPINS_sans <- SPINS %>% select(., sub_id, dataset, sans_doa, sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia) %>% mutate(., sans_G_total =select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
 
-PNS_sans <- PNS %>% select(., sub_id, dataset, sans_doa, sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia) %>% mutate(., G_total = select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
+PNS_sans <- PNS %>% select(., sub_id, dataset, sans_doa, sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia) %>% mutate(., sans_G_total = select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
 
-ds30_sans <- ds30 %>% select(., sub_id, dataset, sans_g_flattening=sans7, sans_g_alogia=sans11, sans_g_avolition=sans16, sans_g_anhedonia = sans21) %>% mutate(., G_total = select(.,sans_g_flattening, sans_g_alogia, sans_g_avolition, sans_g_anhedonia)%>% apply(1, sum))
+ds30_sans <- ds30 %>% select(., sub_id, dataset, sans_g_flattening=sans7, sans_g_alogia=sans11, sans_g_avolition=sans16, sans_g_anhedonia = sans21) %>% mutate(., sans_G_total = select(.,sans_g_flattening, sans_g_alogia, sans_g_avolition, sans_g_anhedonia)%>% apply(1, sum))
 
 
 dti3t_sans <- dti3t %>% select(., sub_id, dataset, sans7_global_flattening, sans12_global_alogia, sans17_global_avolition, sans22_global_asocial_anhedonia) %>% mutate(., sans_G_total = select(.,sans7_global_flattening, sans12_global_alogia,sans17_global_avolition,sans22_global_asocial_anhedonia)%>% apply(1, sum))
@@ -76,7 +79,7 @@ dti3t_sans <- dti3t %>% select(., sub_id, dataset, sans7_global_flattening, sans
 
 
 ```{r}
-sans <- rbind(select(ZHH_sans, sub_id,dataset, G_total), select(SPINS_sans, sub_id, dataset,G_total), select(PNS_sans, sub_id,dataset, G_total), select(ds30_sans, sub_id, dataset,G_total), select(dti3t_sans, sub_id, dataset, G_total))
+sans <- rbind(select(ZHH_sans, sub_id,dataset, sans_G_total), select(SPINS_sans, sub_id, dataset,sans_G_total), select(PNS_sans, sub_id,dataset, sans_G_total), select(ds30_sans, sub_id, dataset,sans_G_total), select(dti3t_sans, sub_id, dataset, sans_G_total))
 
 ```
 
@@ -108,7 +111,23 @@ panss <- rbind(select(COBRE_panss, sub_id, dataset, panss_total_calc,panss_posit
 ```
 
 ```{r}
-compiled <- merge(qa_list,panss, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE) %>% merge(.,sans, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(.,wtar, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)
+compiled <- merge(qa_list,panss, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE) %>% merge(.,sans, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(.,wtar, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(., dx)
+```
+
+It's maybe worth figuring out bprs...
+
+```{r}
+by_group<- compiled %>% group_by(dataset)
+  
+  # group_by(dx, dataset)
+
+by_group %>% summarize(total= sum(!is.na(sub_id)), n_wtar = sum(!is.na(wtar_std)), n_sans= sum(!is.na(sans_G_total)), n_panss=sum(!is.na(panss_total_calc)) )
+```
+
+
+
+```{r}
+compiled_w_edu
 ```
 
 
