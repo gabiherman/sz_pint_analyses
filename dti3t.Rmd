@@ -18,7 +18,7 @@ library(foreign) #for reading in the spss files
 ```
 
 
-
+dti should also have BPRS, RBANS, 
 
 
 

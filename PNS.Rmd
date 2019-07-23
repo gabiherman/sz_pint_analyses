@@ -9,6 +9,9 @@ library(readxl)
 library(foreign) #for reading in the spss files
 ```
 
+
+There's also neuropsych summary scores available for PNS 
+
 ```{r}
 PNS_pheno_pass <- read.csv("/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., studyname=="PNSC")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
 

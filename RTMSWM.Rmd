@@ -9,6 +9,15 @@ library(readxl)
 library(foreign) #for reading in the spss files
 ```
 
+Located here --> 
+/projects/cschifani/rTMSWM/task_fmri/behavioralData/
+
+RTMS WM can get PANSS SANS WTAR MATRICS (?) 
+
+https://edc.camhx.ca/redcap/surveys/?s=4JFL4HA7XH
+
+
+This entire thing is still all SPINS formatty so gotta change that later.
 ```{r}
 SPINS_pheno_pass <- read.csv("/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., studyname=="SPINS")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
 
