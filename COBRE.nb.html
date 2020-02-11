@@ -303,18 +303,17 @@ write.csv(final_final_list,'/projects/gherman/SZ_PINT/cleaner_data_sets/COBRE_ar
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYnlfZ3JvdXA8LSBmaW5hbF9maW5hbF9saXN0ICU+JSBncm91cF9ieShkeClcbmJ5X2dyb3VwICU+JSBzdW1tYXJpemUodG90YWw9IHN1bSghaXMubmEoc3ViamVjdGlkKSksIG5fd3RhciA9IHN1bSghaXMubmEoQ05QXzA1KSksIG5fd2FzaT0gc3VtKCFpcy5uYShDTlBfMDkpKSwgbl9wYW5zcyA9IHN1bSghaXMubmEoRklQQU5fMSkpLCBuX3NjaWQgPSBzdW0oIWlzLm5hKFNDSURJSV8wMSkpKVxuYGBgXG5gYGAifQ== -->
-<p><code>r</code>r by_group&lt;- final_final_list %&gt;% group_by(dx) by_group %&gt;% summarize(total= sum(!is.na(subjectid)), n_wtar = sum(!is.na(CNP_05)), n_wasi= sum(!is.na(CNP_09)), n_panss = sum(!is.na(FIPAN_1)), n_scid = sum(!is.na(SCIDII_01)))</p>
-<pre><code></code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnlfZ3JvdXA8LSBmaW5hbF9maW5hbF9saXN0ICU+JSBncm91cF9ieShkeClcbmJ5X2dyb3VwICU+JSBzdW1tYXJpemUodG90YWw9IHN1bSghaXMubmEoc3ViamVjdGlkKSksIG5fd3RhciA9IHN1bSghaXMubmEoQ05QXzA1KSksIG5fd2FzaT0gc3VtKCFpcy5uYShDTlBfMDkpKSwgbl9wYW5zcyA9IHN1bSghaXMubmEoRklQQU5fMSkpLCBuX3NjaWQgPSBzdW0oIWlzLm5hKFNDSURJSV8wMSkpKVxuYGBgIn0= -->
+<pre class="r"><code>by_group&lt;- final_final_list %&gt;% group_by(dx)
+by_group %&gt;% summarize(total= sum(!is.na(subjectid)), n_wtar = sum(!is.na(CNP_05)), n_wasi= sum(!is.na(CNP_09)), n_panss = sum(!is.na(FIPAN_1)), n_scid = sum(!is.na(SCIDII_01)))</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXHUwMDFiWzM4OzU7MjQ2bSMgQSB0aWJibGU6IDMgeCA2XHUwMDFiWzM5bVxuICBkeCAgICB0b3RhbCBuX3d0YXIgbl93YXNpIG5fcGFuc3Mgbl9zY2lkXG4gIFx1MDAxYlszbVx1MDAxYlszODs1OzI0Nm08Y2hyPlx1MDAxYlszOW1cdTAwMWJbMjNtIFx1MDAxYlszbVx1MDAxYlszODs1OzI0Nm08aW50Plx1MDAxYlszOW1cdTAwMWJbMjNtICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGludD5cdTAwMWJbMzltXHUwMDFiWzIzbSAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxpbnQ+XHUwMDFiWzM5bVx1MDAxYlsyM20gICBcdTAwMWJbM21cdTAwMWJbMzg7NTsyNDZtPGludD5cdTAwMWJbMzltXHUwMDFiWzIzbSAgXHUwMDFiWzNtXHUwMDFiWzM4OzU7MjQ2bTxpbnQ+XHUwMDFiWzM5bVx1MDAxYlsyM21cblx1MDAxYlszODs1OzI1MG0xXHUwMDFiWzM5bSBDVFJMICAgICAzMiAgICAgMzIgICAgIDMyICAgICAgIDAgICAgIDMyXG5cdTAwMWJbMzg7NTsyNTBtMlx1MDAxYlszOW0gU1NEICAgICAgMjIgICAgIDIyICAgICAyMiAgICAgIDIyICAgICAyMlxuXHUwMDFiWzM4OzU7MjUwbTNcdTAwMWJbMzltIFx1MDAxYlszMW1OQVx1MDAxYlszOW0gICAgICAgIDIgICAgICAyICAgICAgMiAgICAgICAyICAgICAgMlxuIn0= -->
-<pre><code>[38;5;246m# A tibble: 3 x 6[39m
-  dx    total n_wtar n_wasi n_panss n_scid
-  [3m[38;5;246m&lt;chr&gt;[39m[23m [3m[38;5;246m&lt;int&gt;[39m[23m  [3m[38;5;246m&lt;int&gt;[39m[23m  [3m[38;5;246m&lt;int&gt;[39m[23m   [3m[38;5;246m&lt;int&gt;[39m[23m  [3m[38;5;246m&lt;int&gt;[39m[23m
-[38;5;250m1[39m CTRL     32     32     32       0     32
-[38;5;250m2[39m SSD      22     22     22      22     22
-[38;5;250m3[39m [31mNA[39m        2      2      2       2      2</code></pre>
-<!-- rnb-output-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibmNvbCI6NiwibnJvdyI6M30sInJkZiI6Ikg0c0lBQUFBQUFBQUE1VlF3VTdETUF6MWtyWlRLdzJRa0RqekE2c0V2OENPbkRZT3UwMmhMU3hhY2FvazAzYmt4OWx3c2tTVUhKQ0k1TmgranVQM3ZGeXNINnQxQlFBTWVFNDNwekJqZEUwZ2c5TDVJd0MvcGFBZ3V5SGpvWkE5dlN5ZlE4eFhxd1c1OGt5SC9Ndy9BN2dudS9OLy94K0R2OS85NHBpaitPaE00RmNFa0xYSFdMYktpajRrQlc0T1Z1aFJKb3dNMlJRM2cwQmpmb3Fta1cweXJOVHFVTWVCamhuN3BJdUVmNldzbWw2WXlDcUNWU3VzcU44MDlWTjJTbHFtYXJCU0lUVXh0L0k4YVo3b0JMamVvMlBTenB2dEhuZnpCemZBbHk5bkZtSStpb3ZMU0hZT1grVlJiSWZ2RXJ2SXZSZXZYVnpaRlNuMmd1dEJTN1JSQ2FHbUhxKzJhbFFmRWE4TlR0L2ovcW5TWUFJQUFBPT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["dx"],"name":[1],"type":["chr"],"align":["left"]},{"label":["total"],"name":[2],"type":["int"],"align":["right"]},{"label":["n_wtar"],"name":[3],"type":["int"],"align":["right"]},{"label":["n_wasi"],"name":[4],"type":["int"],"align":["right"]},{"label":["n_panss"],"name":[5],"type":["int"],"align":["right"]},{"label":["n_scid"],"name":[6],"type":["int"],"align":["right"]}],"data":[{"1":"CTRL","2":"32","3":"32","4":"32","5":"0","6":"32"},{"1":"SSD","2":"22","3":"22","4":"22","5":"22","6":"22"},{"1":"NA","2":"2","3":"2","4":"2","5":"2","6":"2"}],"options":{"columns":{"min":{},"max":[10],"total":[6]},"rows":{"min":[10],"max":[10],"total":[3]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
