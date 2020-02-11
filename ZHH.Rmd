@@ -37,7 +37,7 @@ demo_hc <- read_xlsx("/scratch/gherman/SCZ_PINT/data/ZHH/demographics/qryHC_NewR
 ```
 
 ```{r}
-ZHH_pheno_pass <- read.csv("/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., studyname=="ZHH") %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")%>% mutate_all(trimws)
+ZHH_pheno_pass <- read.csv("/projects/edickie/code/SZ_PINT/phenotypic/20200202_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., dataset=="ZHH") %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")%>% mutate_all(trimws)
 qa_list <- ZHH_pheno_pass %>% select(., dataset,GRID,SessNo=zhh_session_id, sex = Sex, dx = DX, Age)
 ```
 
@@ -45,14 +45,14 @@ qa_list <- ZHH_pheno_pass %>% select(., dataset,GRID,SessNo=zhh_session_id, sex 
 ```{r}
 Combo <- Combo %>% mutate(., imaging_pass= ifelse((GRID %in% qa_list$GRID), 1, 0))
 
-write.csv(Combo,'/projects/gherman/SZ_PINT/cleaner_data_sets/ZHH_arranged.csv')
+#write.csv(Combo,'/projects/gherman/SZ_PINT/cleaner_data_sets/ZHH_arranged.csv')
 
 ```
 
 ```{r}
 final_list <- Combo %>% filter(., imaging_pass == 1)
 
-write.csv(final_list,'/projects/gherman/SZ_PINT/cleaner_data_sets/ZHH_arranged2.csv')
+write.csv(final_list,'/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/ZHH_arranged2020.csv')
 
 ```
 
