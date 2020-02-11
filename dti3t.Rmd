@@ -54,7 +54,7 @@ final_list <- data2 %>% filter(., imaging_pass == 1)
 
 final_list <- final_list %>% merge(dx, by="dti_id", all.x=TRUE)
 
-write.csv(final_list,'/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/dti3t_arranged2.csv')
+write.csv(final_list,'/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/dti3t_arranged2020.csv')
 
 
 ```
