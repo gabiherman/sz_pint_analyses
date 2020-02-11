@@ -9,14 +9,14 @@ library(tidyverse)
 library(readxl)
 library(foreign) #for reading in the spss files
 ```
-
+changes made: replace studyname with dataset, subject_id.x with subject id
 
 Soooo this is a bit weird. Because the COBRE dataset is sort of kind of terrible, and didn't have dates or visit numbers for some reason. I need to make a schizconnect acct and try to find something with visit numbers. 
 
 ```{r}
-COBRE_pheno_pass <- read.csv("/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., studyname=="COBRE")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
+COBRE_pheno_pass <- read.csv("/projects/edickie/code/SZ_PINT/phenotypic/20200202_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., dataset=="COBRE")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
 
-qa_list <- COBRE_pheno_pass %>% select(., dataset,subjectid=subject_id.x, sex = Sex, dx = DX, Age)
+qa_list <- COBRE_pheno_pass %>% select(., dataset,subjectid=subject_id, sex = Sex, dx = DX, Age)
 
 ```
 
@@ -43,7 +43,7 @@ dx <- qa_list %>% select(subjectid, dx)
 
 final_final_list <- final_list %>% merge(dx, by="subjectid", all.x=TRUE)
 
-write.csv(final_final_list,'/projects/gherman/SZ_PINT/cleaner_data_sets/COBRE_arranged2.csv')
+write.csv(final_final_list,'/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/COBRE_arranged_2020.csv')
 
 
 ```
