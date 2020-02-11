@@ -31,22 +31,22 @@ Read in the participant data for all studies. These data have been filtered to o
 Add a mutate studyname to this later.
 
 ```{r}
-ZHH <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/ZHH_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=GRID)%>% mutate(., dataset="ZHH")
+ZHH <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/ZHH_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=GRID)%>% mutate(., dataset="ZHH")
 
 
-SPINS <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/SPINS_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")  %>%  mutate(.,sub_id=str_replace_all(record_id,c("_"="","SPN01"=""))) %>% mutate(., dataset="SPINS")
+SPINS <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/SPINS_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")  %>%  mutate(.,sub_id=str_replace_all(record_id,c("_"="","SPN01"=""))) %>% mutate(., dataset="SPINS")
 
 
-PNS <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/PNS_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=str_replace_all(record_id,c("_"="","PNS"="")))%>% mutate(., dataset="PNSC")
+PNS <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/PNS_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=str_replace_all(record_id,c("_"="","PNS"="")))%>% mutate(., dataset="PNSC")
 
 
-ds30 <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/ds00030_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=str_remove(participant_id, "sub-")) %>% mutate(., dataset="ds000030_R1.0.5")
+ds30 <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/ds00030_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=str_remove(participant_id, "sub-")) %>% mutate(., dataset="ds000030_R1.0.5")
 
 
-COBRE <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/COBRE_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=subjectid) %>% mutate(., dataset="COBRE")
+COBRE <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/COBRE_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=subjectid) %>% mutate(., dataset="COBRE")
 
 
-dti3t <- read.csv('/projects/gherman/SZ_PINT/cleaner_data_sets/dti3t_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=paste0("CMH",dti_id))%>% mutate(., dataset="DTI3T")
+dti3t <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/dti3t_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=paste0("CMH",dti_id))%>% mutate(., dataset="DTI3T")
 
 ```
 
@@ -111,7 +111,9 @@ panss <- rbind(select(COBRE_panss, sub_id, dataset, panss_total_calc,panss_posit
 ```
 
 ```{r}
-compiled <- merge(qa_list,panss, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE) %>% merge(.,sans, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(.,wtar, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(., dx)
+compiled <- merge(qa_list,panss, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE) %>% merge(.,sans, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(.,wtar, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(., dx) %>% merge(., select(ZHH, sub_id=GRID, SessNo), by = c("sub_id"), all.x=TRUE)
+
+#write.csv(compiled, '../compiled_data_07082019_2.csv')
 ```
 
 It's maybe worth figuring out bprs...
@@ -121,14 +123,11 @@ by_group<- compiled %>% group_by(dataset)
   
   # group_by(dx, dataset)
 
-by_group %>% summarize(total= sum(!is.na(sub_id)), n_wtar = sum(!is.na(wtar_std)), n_sans= sum(!is.na(sans_G_total)), n_panss=sum(!is.na(panss_total_calc)) )
+by_group %>% summarize(total_participants= sum(!is.na(sub_id)), n_wtar = sum(!is.na(wtar_std)), n_sans= sum(!is.na(sans_G_total)), n_panss=sum(!is.na(panss_total_calc))) %>% bind_rows(summarise_all(., funs(if(is.numeric(.)) sum(.) else "Total")))
 ```
 
 
 
-```{r}
-compiled_w_edu
-```
 
 
 Other stuff to consider adding: 
