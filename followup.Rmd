@@ -10,17 +10,20 @@ Try executing this chunk by clicking the *Run* button within the chunk or by pla
 Left to do: dti3t asdd pns(?) openneuro rtmswm 
 
 
+TODO today: keep site selected so I can merge with education at the end .
+
 ```{r}
 library(tidyverse)
 library(readxl)
 library(foreign) #for reading in the spss files
+library(stringr) #loads dev version of stringr for str_split_n function
 ```
-
+note to self: gotta deal with the shared zhh openneuro ids...
 
 ```{r}
-ds_pheno_pass <- read.csv("/scratch/gherman/SCZ_PINT/data/20181118_pheno_qapass.csv", stringsAsFactors = FALSE) %>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
+ds_pheno_pass <- read.csv("/projects/edickie/code/SZ_PINT/data/processed/pheno/20200202_pheno_qapass.csv", stringsAsFactors = FALSE) %>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
 
-qa_list <- ds_pheno_pass %>% select(., dataset,sub_id=subject_id.x, sex = Sex, dx = DX, age = Age)
+qa_list <- ds_pheno_pass %>% select(., dataset,sub_id=subject_id, sex = Sex, dx = DX, age = Age, Site)
 
 dx <- qa_list %>% select(., sub_id, dx)
 
@@ -31,22 +34,22 @@ Read in the participant data for all studies. These data have been filtered to o
 Add a mutate studyname to this later.
 
 ```{r}
-ZHH <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/ZHH_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=GRID)%>% mutate(., dataset="ZHH")
+ZHH <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/ZHH_arranged2020.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=GRID)%>% mutate(., dataset="ZHH")
 
 
-SPINS <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/SPINS_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")  %>%  mutate(.,sub_id=str_replace_all(record_id,c("_"="","SPN01"=""))) %>% mutate(., dataset="SPINS")
+SPINS <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/SPINS_arranged2020.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")  %>%  mutate(.,sub_id=str_replace_all(record_id,c("_"="","SPN01"=""))) %>% mutate(., dataset="SPINS")
 
 
-PNS <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/PNS_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=str_replace_all(record_id,c("_"="","PNS"="")))%>% mutate(., dataset="PNSC")
+PNS <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/PNS_arranged2020.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=str_replace_all(record_id,c("_"="","PNS"="")))%>% mutate(., dataset="PNSC")
 
 
-ds30 <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/ds00030_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=str_remove(participant_id, "sub-")) %>% mutate(., dataset="ds000030_R1.0.5")
+ds30 <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/ds00030_arranged2020.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=str_remove(participant_id, "sub-")) %>% mutate(., dataset="ds000030_R1.0.5")
 
 
-COBRE <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/COBRE_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=subjectid) %>% mutate(., dataset="COBRE")
+COBRE <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/COBRE_arranged_2020.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=subjectid) %>% mutate(., dataset="COBRE")
 
 
-dti3t <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/dti3t_arranged2.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=paste0("CMH",dti_id))%>% mutate(., dataset="DTI3T")
+dti3t <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/dti3t_arranged2020.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=paste0("CMH",dti_id))%>% mutate(., dataset="DTI3T")
 
 ```
 
@@ -111,7 +114,17 @@ panss <- rbind(select(COBRE_panss, sub_id, dataset, panss_total_calc,panss_posit
 ```
 
 ```{r}
-compiled <- merge(qa_list,panss, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE) %>% merge(.,sans, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(.,wtar, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(., dx) %>% merge(., select(ZHH, sub_id=GRID, SessNo), by = c("sub_id"), all.x=TRUE)
+compiled <- merge(qa_list,panss, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE) %>% merge(.,sans, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(.,wtar, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(., dx) %>% merge(., select(ZHH, sub_id=GRID, SessNo), by = c("sub_id"), all.x=TRUE) %>%
+  mutate(Site=case_when(
+    dataset=="ZHH" ~ "ZHH",
+    dataset=="ds000030_R1.0.5" ~ "ds000030_R1.0.5",
+    dataset=="COBRE" ~ "COBRE", 
+    dataset=="PNSC" ~ "CMH",
+    dataset=="SPINS" ~ "CMH",
+    dataset=="DTI3T" ~"CMH",
+    dataset=="ASDD" ~ "CMH",
+    dataset=="RTMSWM" ~ "CMH"
+  ))
 
 #write.csv(compiled, '../compiled_data_07082019_2.csv')
 ```
@@ -128,9 +141,25 @@ by_group %>% summarize(total_participants= sum(!is.na(sub_id)), n_wtar = sum(!is
 
 
 
+```{r, exec=FALSE}
+
+#should consider organizing these scripts, lol...
+edu <- read.csv("/scratch/gherman/SCZ_PINT/data/saba/Demographics_Github_29Aug2018.csv", stringsAsFactors = FALSE) %>% 
+  mutate(., sub_id =  case_when(
+        Site == "ZHH" ~ paste0(substr(name, 1, 5)), 
+        Site=="CMH" ~ paste0(str_split_n(name, pattern="_",2),str_split_n(name, pattern="_",3)),
+       Site =="COBRE" ~ paste0(name),
+       TRUE ~ paste0(as.character(name)))) %>% 
+      select(sub_id, Edu, Site)
 
 
-Other stuff to consider adding: 
+all_compiled <- compiled %>% left_join(., edu, by=c("sub_id","Site"))
+```
+
+
+
+
+Other stuff to consider adding:  ; ; r    
 Education (all)
 Age of onset (all except openneuro)
 Conners CPT 2(2)
