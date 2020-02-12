@@ -23,7 +23,7 @@ dti should also have BPRS, RBANS,
 
 
 ```{r}
-DTI_pheno_pass <- read.csv("/projects/edickie/code/SZ_PINT/phenotypic/20200202_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., dataset=="DTI3T")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
+DTI_pheno_pass <- read.csv("/projects/edickie/code/SZ_PINT/data/processed/pheno/20200202_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., dataset=="DTI3T")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
 
 qa_list <- DTI_pheno_pass %>% select(., dataset,dti_id=subject_id, sex = Sex, dx = DX, Age) %>% mutate(dti_id=substr(dti_id,4,8))
 
