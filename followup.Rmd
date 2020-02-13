@@ -131,13 +131,6 @@ compiled <- merge(qa_list,panss, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)
 
 It's maybe worth figuring out bprs...
 
-```{r}
-by_group<- compiled %>% group_by(dataset)
-  
-  # group_by(dx, dataset)
-
-by_group %>% summarize(total_participants= sum(!is.na(sub_id)), n_wtar = sum(!is.na(wtar_std)), n_sans= sum(!is.na(sans_G_total)), n_panss=sum(!is.na(panss_total_calc))) %>% bind_rows(summarise_all(., funs(if(is.numeric(.)) sum(.) else "Total")))
-```
 
 
 
@@ -150,13 +143,49 @@ edu <- read.csv("/scratch/gherman/SCZ_PINT/data/saba/Demographics_Github_29Aug20
         Site=="CMH" ~ paste0(str_split_n(name, pattern="_",2),str_split_n(name, pattern="_",3)),
        Site =="COBRE" ~ paste0(name),
        TRUE ~ paste0(as.character(name)))) %>% 
-      select(sub_id, Edu, Site)
+      select(merge_sub_id=sub_id, Edu, Site)
 
 
-all_compiled <- compiled %>% left_join(., edu, by=c("sub_id","Site"))
+
+#adding school years from openneuro :) coding according to zhh
+
+edu_open <- read.csv("/scratch/gherman/SCZ_PINT/data/saba/ClinicalData/ds000030/phenotype_demographics.tsv", stringsAsFactors = FALSE, sep="\t") %>% 
+  mutate(merge_sub_id = substr(participant_id, 5, 9), 
+         Site= "ds000030_R1.0.5", 
+         Edu=case_when(school_degree %in% c(1, 2) ~ school_yrs, #high school or no high school
+                       school_degree %in% c(3) ~ school_yrs, #some college
+                      school_degree ==4 ~ 14, #associates degree
+                      school_degree==5 ~ 16, 
+                      school_degree==6 ~ 18, 
+                      school_degree == 7 ~ 20, 
+                      school_degree == 8 ~ school_yrs)) %>% select(merge_sub_id, Edu, Site)
+
+
+all_edu <- rbind(edu, edu_open)
+
+
+#merge sub_id allows for zhh to be merged bc unfortunately the edu data is by GRID
+all_compiled <- compiled %>% mutate(merge_sub_id = ifelse(Site=="ZHH", SessNo, sub_id))%>%
+  left_join(., all_edu, by=c("merge_sub_id","Site")) 
+```
+
+#okay i should add the school_yrs from openneuro to this. And I should probably add the bprs from everything.
+
+```{r}
+by_group<- all_compiled %>% group_by(dataset)
+  
+  # group_by(dx, dataset)
+
+by_group %>% summarize(total_participants= sum(!is.na(sub_id)), n_wtar = sum(!is.na(wtar_std)), n_sans= sum(!is.na(sans_G_total)), n_panss=sum(!is.na(panss_total_calc)), edu= sum(!is.na(Edu))) %>% bind_rows(summarise_all(., funs(if(is.numeric(.)) sum(.) else "Total")))
 ```
 
 
+
+
+
+```{r}
+write.csv(all_compiled,"/projects/gherman/SZ_PINT/compiled_clinical/compiled_2020_feb13.csv")
+```
 
 
 Other stuff to consider adding:  ; ; r    
