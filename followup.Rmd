@@ -22,11 +22,11 @@ note to self: gotta deal with the shared zhh openneuro ids... 10365 and 10570...
 #i merged based on two things but i am still getting sessno where I should not... look into this. 
 
 ```{r}
-ds_pheno_pass <- read.csv("/projects/edickie/code/SZ_PINT/data/processed/pheno/20200202_pheno_qapass.csv", stringsAsFactors = FALSE) %>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
+ds_pheno_pass <- read.csv("/projects/edickie/code/SZ_PINT/data/processed/pheno/20200214_pheno_qapass.csv", stringsAsFactors = FALSE) %>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
 
 qa_list <- ds_pheno_pass %>% select(., dataset,sub_id=subject_id, sex = Sex, dx = DX, age = Age, Site)
 
-dx <- qa_list %>% select(., sub_id, dx)
+dx <- qa_list %>% select(., sub_id, dx, dataset)
 
 ```
 
@@ -115,7 +115,7 @@ panss <- rbind(select(COBRE_panss, sub_id, dataset, panss_total_calc,panss_posit
 ```
 
 ```{r}
-compiled <- merge(qa_list,panss, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE) %>% merge(.,sans, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(.,wtar, by=c("sub_id","dataset"),all.x=TRUE,all.y=TRUE)  %>% merge(., dx) %>% merge(., select(ZHH, sub_id=GRID, SessNo), by = c("sub_id"), all.x=TRUE) %>%
+compiled <- merge(qa_list,panss, by=c("sub_id","dataset"),all.x=TRUE) %>% merge(., select(ZHH,dataset, sub_id, SessNo), by = c("sub_id", "dataset"), all.x=TRUE) %>% merge(.,sans, by=c("sub_id","dataset"),all.x=TRUE)  %>% merge(.,wtar, by=c("sub_id","dataset"),all.x=TRUE)  %>% 
   mutate(Site=case_when(
     dataset=="ZHH" ~ "ZHH",
     dataset=="ds000030_R1.0.5" ~ "ds000030_R1.0.5",
@@ -185,7 +185,7 @@ by_group %>% summarize(total_participants= sum(!is.na(sub_id)), n_wtar = sum(!is
 
 
 ```{r}
-write.csv(all_compiled,"/projects/gherman/SZ_PINT/compiled_clinical/compiled_2020_feb13.csv")
+write.csv(all_compiled,"/projects/gherman/SZ_PINT/compiled_clinical/compiled_2020_feb24.csv")
 ```
 
 
