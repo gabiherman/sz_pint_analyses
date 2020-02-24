@@ -18,7 +18,8 @@ library(readxl)
 library(foreign) #for reading in the spss files
 library(stringr) #loads dev version of stringr for str_split_n function
 ```
-note to self: gotta deal with the shared zhh openneuro ids...
+note to self: gotta deal with the shared zhh openneuro ids... 10365 and 10570... it makes the edu all the same also so we've gotta fix this 
+#i merged based on two things but i am still getting sessno where I should not... look into this. 
 
 ```{r}
 ds_pheno_pass <- read.csv("/projects/edickie/code/SZ_PINT/data/processed/pheno/20200202_pheno_qapass.csv", stringsAsFactors = FALSE) %>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
