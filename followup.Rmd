@@ -43,22 +43,22 @@ Read in the participant data for all studies. These data have been filtered to o
 Add a mutate studyname to this later.
 
 ```{r}
-ZHH <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/ZHH_arranged2020.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=GRID)%>% mutate(., dataset="ZHH")
+ZHH <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/ZHH_arranged2020_march.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=GRID)%>% mutate(., dataset="ZHH")
 
 
-SPINS <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/SPINS_arranged2020.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")  %>%  mutate(.,sub_id=str_replace_all(record_id,c("_"="","SPN01"=""))) %>% mutate(., dataset="SPINS")
+SPINS <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/SPINS_arranged2020_march.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ")  %>%  mutate(.,sub_id=str_replace_all(record_id,c("_"="","SPN01"=""))) %>% mutate(., dataset="SPINS")
 
 
-PNS <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/PNS_arranged2020.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=str_replace_all(record_id,c("_"="","PNS"="")))%>% mutate(., dataset="PNSC")
+PNS <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/PNS_arranged2020_march.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=str_replace_all(record_id,c("_"="","PNS"="")))%>% mutate(., dataset="PNSC")
 
 
-ds30 <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/ds00030_arranged2020.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=str_remove(participant_id, "sub-")) %>% mutate(., dataset="ds000030_R1.0.5")
+ds30 <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/ds00030_arranged2020_march.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=str_remove(participant_id, "sub-")) %>% mutate(., dataset="ds000030_R1.0.5")
 
 
-COBRE <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/COBRE_arranged_2020.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=subjectid) %>% mutate(., dataset="COBRE")
+COBRE <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/COBRE_arranged_2020_march.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=subjectid) %>% mutate(., dataset="COBRE")
 
 
-dti3t <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/dti3t_arranged2020.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=paste0("CMH",dti_id))%>% mutate(., dataset="DTI3T")
+dti3t <- read.csv('/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/dti3t_arranged2020_march.csv', stringsAsFactors = FALSE)%>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") %>% mutate(.,sub_id=paste0("CMH",dti_id))%>% mutate(., dataset="DTI3T")
 
 ```
 
@@ -193,16 +193,13 @@ by_group %>% summarize(total_participants= sum(!is.na(sub_id)), n_wtar = sum(!is
 
 
 ```{r}
-#write.csv(all_compiled,"/projects/gherman/SZ_PINT/compiled_clinical/all_simplepheno_compiled_2020_mar02.csv")
+write.csv(all_compiled,"/projects/gherman/SZ_PINT/compiled_clinical/all_simplepheno_compiled_2020_mar02.csv")
 
-
-
-#qa_compiled <- all_compiled %>% filter(sub_id %in% qa_list_shorter$sub_id)
 
 qa_compiled <- qa_list_shorter %>% merge(., all_compiled, by=c("sub_id", "SessNo", "dataset"), all.x=TRUE, all.y=FALSE)
 
 
-#write.csv(qa_compiled,"/projects/gherman/SZ_PINT/compiled_clinical/qa_pheno_compiled_2020_mar02.csv")
+write.csv(qa_compiled,"/projects/gherman/SZ_PINT/compiled_clinical/qa_pheno_compiled_2020_mar02.csv")
 
 ```
 
