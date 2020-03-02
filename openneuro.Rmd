@@ -18,7 +18,7 @@ library(foreign) #for reading in the spss files
 
 
 ```{r}
-ds_pheno_pass <- read.csv("/projects/edickie/code/SZ_PINT/phenotypic/20200202_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., dataset=="ds000030_R1.0.5")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>%+tate_all(na_if, "") %>% mutate_all(na_if, " ") 
+ds_pheno_pass <- read.csv("/projects/edickie/code/SZ_PINT/data/processed/pheno/20200221_pheno_clinicalplusqa.csv", stringsAsFactors = FALSE) %>% filter(., dataset=="ds000030_R1.0.5")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>%mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
 
 qa_list <- ds_pheno_pass %>% select(., dataset, sex = Sex, dx = DX, Age, participant_id=subject)
 
@@ -44,7 +44,7 @@ data <- all_evals %>% mutate(., imaging_pass= ifelse((participant_id %in% qa_lis
 
 final_list <- data %>% filter(., imaging_pass == 1) %>% merge(dx, by="participant_id", all.x=TRUE)
 
-write.csv(final_list,'/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/ds00030_arranged2020.csv')
+write.csv(final_list,'/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/ds00030_arranged2020_march.csv')
 
 ```
 

@@ -19,7 +19,7 @@ https://edc.camhx.ca/redcap/surveys/?s=4JFL4HA7XH
 
 This entire thing is still all SPINS formatty so gotta change that later.
 ```{r}
-SPINS_pheno_pass <- read.csv("/projects/edickie/code/SZ_PINT/phenotypic/20200202_pheno_qapass.csv", stringsAsFactors = FALSE) %>% filter(., dataset=="SPINS")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
+SPINS_pheno_pass <- read.csv("/projects/edickie/code/SZ_PINT/data/processed/pheno/20200221_pheno_clinicalplusqa.csv", stringsAsFactors = FALSE) %>% filter(., dataset=="SPINS")%>% mutate_all(trimws) %>% mutate_all(na_if,"NA") %>% mutate_all(na_if, "") %>% mutate_all(na_if, " ") 
 
 qa_list <- SPINS_pheno_pass %>% select(., dataset,subject_id, sex = Sex, dx = DX, Age)
 ```
@@ -43,7 +43,7 @@ data2 <- data %>% mutate(., imaging_pass= ifelse((subject_id %in% qa_list$subjec
 
 final_list <- data2 %>% filter(., imaging_pass == 1)
 
-write.csv(final_list,'/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/SPINS_arranged2020.csv')
+write.csv(final_list,'/projects/gherman/SZ_PINT/compiled_clinical/cleaner_data_sets/SPINS_arranged2020_rtmswm_unecessary.csv')
 
 
 ```
